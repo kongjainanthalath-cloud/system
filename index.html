@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Project By JaiNtl - Ultra Glass Edition</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Noto Sans Lao Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap">
+    <style>
+        :root {
+            --ios-bg: #030408;
+            --ios-card-bg: rgba(255, 255, 255, 0.05);
+            --ios-card-border: rgba(255, 255, 255, 0.15);
+            --ios-card-glow: rgba(10, 132, 255, 0.12);
+            --ios-input-bg: rgba(255, 255, 255, 0.07);
+            --ios-accent: #0a84ff;
+            --ios-accent-gradient: linear-gradient(135deg, rgba(10, 132, 255, 0.8) 0%, rgba(94, 92, 230, 0.8) 100%);
+            --ios-success: #30d158;
+            --ios-danger: #ff453a;
+            --ios-warning: #ffd60a;
+            --ios-text: #ffffff;
+            --ios-text-secondary: rgba(235, 235, 245, 0.65);
+            --ios-radius-lg: 24px;
+            --ios-radius-md: 16px;
+            --ios-radius-sm: 12px;
+            --ios-transition: all 0.4s cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: var(--ios-bg);
+            color: var(--ios-text);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Noto Sans Lao', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Canvas Starfield */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 24px 32px;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Glassmorphism Header Bar */
+        .desktop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(20, 20, 30, 0.35);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border: 1px solid var(--ios-card-border);
+            padding: 16px 28px;
+            border-radius: var(--ios-radius-lg);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            flex-wrap: wrap;
+            gap: 14px;
+            transition: var(--ios-transition);
+        }
+
+        .page-title {
+            font-size: 21px;
+            color: var(--ios-text);
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .page-title i {
+            background: var(--ios-accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 8px rgba(10, 132, 255, 0.5));
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-header {
+            background: var(--ios-input-bg);
+            color: var(--ios-text);
+            border: 1px solid var(--ios-card-border);
+            padding: 10px 18px;
+            border-radius: var(--ios-radius-md);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--ios-transition);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        .btn-header:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 15px var(--ios-card-glow);
+        }
+        .btn-header:active { transform: translateY(0) scale(0.98); }
+
+        .btn-header.summary-btn {
+            background: var(--ios-accent-gradient);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 6px 20px rgba(10, 132, 255, 0.35);
+        }
+        .btn-header.summary-btn:hover {
+            box-shadow: 0 10px 30px rgba(10, 132, 255, 0.5);
+        }
+
+        /* Grid Layout */
+        .desktop-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            flex: 1;
+        }
+
+        @media (max-width: 960px) {
+            .desktop-grid { grid-template-columns: 1fr; }
+            .app-container { padding: 16px; }
+        }
+
+        /* Ultra-Glass Form Panel */
+        .form-panel {
+            background: rgba(20, 20, 30, 0.3);
+            backdrop-filter: blur(35px) saturate(200%);
+            -webkit-backdrop-filter: blur(35px) saturate(200%);
+            border: 1px solid var(--ios-card-border);
+            padding: 26px;
+            border-radius: var(--ios-radius-lg);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+            transition: var(--ios-transition);
+        }
+        .form-panel:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .form-panel h3 { 
+            margin-top: 0; 
+            margin-bottom: 22px; 
+            font-size: 18px; 
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.2px;
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-group { margin-bottom: 18px; }
+        label { 
+            display: block; 
+            font-size: 13px; 
+            color: var(--ios-text-secondary); 
+            margin-bottom: 8px; 
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--ios-input-bg);
+            border: 1px solid var(--ios-card-border);
+            border-radius: var(--ios-radius-sm);
+            color: var(--ios-text);
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--ios-transition);
+            outline: none;
+            backdrop-filter: blur(10px);
+        }
+        input:focus, select:focus { 
+            border-color: var(--ios-accent);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 20px rgba(10, 132, 255, 0.3);
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="month"]::-webkit-calendar-picker-indicator { filter: invert(0.9); cursor: pointer; }
+        input:disabled { opacity: 0.35; cursor: not-allowed; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--ios-accent-gradient);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: var(--ios-radius-md);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--ios-transition);
+            box-shadow: 0 6px 20px rgba(10, 132, 255, 0.3);
+        }
+        .btn-submit:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 30px rgba(10, 132, 255, 0.5);
+        }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--ios-text);
+            border: 1px solid var(--ios-card-border);
+            border-radius: var(--ios-radius-sm);
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: none;
+            transition: var(--ios-transition);
+        }
+        .btn-cancel:hover { background: rgba(255, 255, 255, 0.18); }
+
+        .btn-clear {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 69, 58, 0.1);
+            color: var(--ios-danger);
+            border: 1px solid rgba(255, 69, 58, 0.25);
+            border-radius: var(--ios-radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--ios-transition);
+        }
+        .btn-clear:hover { 
+            background: rgba(255, 69, 58, 0.2); 
+            box-shadow: 0 4px 15px rgba(255, 69, 58, 0.2);
+        }
+
+        /* Glass Display Panel Table */
+        .display-panel {
+            background: rgba(20, 20, 30, 0.3);
+            backdrop-filter: blur(35px) saturate(200%);
+            -webkit-backdrop-filter: blur(35px) saturate(200%);
+            border: 1px solid var(--ios-card-border);
+            border-radius: var(--ios-radius-lg);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: var(--ios-transition);
+        }
+        .display-panel:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .filter-bar {
+            padding: 16px 22px;
+            border-bottom: 1px solid var(--ios-card-border);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.15);
+            flex-wrap: wrap;
+        }
+        .filter-bar input, .filter-bar select {
+            padding: 9px 14px;
+            font-size: 13px;
+            width: auto;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .table-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .desktop-data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .desktop-data-table th {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 15, 25, 0.85);
+            backdrop-filter: blur(15px);
+            color: var(--ios-text-secondary);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--ios-card-border);
+            z-index: 10;
+        }
+        .desktop-data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 14px;
+            transition: var(--ios-transition);
+        }
+        .desktop-data-table tr {
+            transition: var(--ios-transition);
+        }
+        .desktop-data-table tr:hover td { 
+            background: rgba(255, 255, 255, 0.06); 
+        }
+        
+        .date-header-row td {
+            background: rgba(10, 132, 255, 0.12);
+            color: var(--ios-accent);
+            font-weight: 700;
+            padding: 12px 20px;
+            letter-spacing: 0.2px;
+        }
+
+        .amount-add { color: var(--ios-success); font-weight: 600; text-shadow: 0 0 10px rgba(48, 209, 88, 0.3); }
+        .amount-cut { color: var(--ios-danger); font-weight: 600; text-shadow: 0 0 10px rgba(255, 69, 58, 0.3); }
+        .amount-absent { color: #ff3b30; font-weight: 700; text-shadow: 0 0 10px rgba(255, 59, 48, 0.4); }
+        .amount-leave { color: var(--ios-warning); font-weight: 600; }
+        .amount-zero { color: var(--ios-text-secondary); }
+
+        .action-btns { display: flex; gap: 8px; }
+        .btn-edit-row, .btn-delete-row {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: var(--ios-transition);
+        }
+        .btn-edit-row { background: rgba(10, 132, 255, 0.15); color: var(--ios-accent); border-color: rgba(10, 132, 255, 0.3); }
+        .btn-edit-row:hover { background: var(--ios-accent); color: #fff; transform: translateY(-2px); }
+        .btn-delete-row { background: rgba(255, 69, 58, 0.15); color: var(--ios-danger); border-color: rgba(255, 69, 58, 0.3); }
+        .btn-delete-row:hover { background: var(--ios-danger); color: #fff; transform: translateY(-2px); }
+
+        /* Modal Ultra Smooth Blur */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--ios-transition);
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: rgba(25, 25, 35, 0.75);
+            border: 1px solid var(--ios-card-border);
+            width: 90%; max-width: 520px;
+            padding: 28px;
+            border-radius: var(--ios-radius-lg);
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: scale(0.9) translateY(20px);
+            transition: var(--ios-transition);
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        .modal-content-large { max-width: 950px; }
+
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; border-bottom: 1px solid var(--ios-card-border); padding-bottom: 14px;
+        }
+        .modal-header h3 { margin: 0; font-size: 19px; }
+        .btn-close-modal {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid var(--ios-card-border); color: var(--ios-text-secondary);
+            width: 32px; height: 32px; border-radius: 50%; cursor: pointer; transition: var(--ios-transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-close-modal:hover { background: rgba(255, 69, 58, 0.2); color: var(--ios-danger); transform: rotate(90deg); }
+
+        .add-emp-box { display: flex; gap: 10px; margin-bottom: 15px; }
+        .btn-add-emp {
+            background: var(--ios-accent-gradient); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0 20px; border-radius: var(--ios-radius-sm); font-weight: 600; cursor: pointer;
+            transition: var(--ios-transition);
+        }
+        .btn-add-emp:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4); }
+
+        .emp-manage-list {
+            list-style: none; padding: 0; margin: 0; max-height: 220px;
+            overflow-y: auto; border: 1px solid var(--ios-card-border); border-radius: var(--ios-radius-sm);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .emp-manage-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 14px;
+        }
+        .btn-del-emp {
+            background: rgba(255, 69, 58, 0.15); color: var(--ios-danger); border: none;
+            padding: 4px 10px; border-radius: 12px; cursor: pointer; font-size: 12px;
+            transition: var(--ios-transition);
+        }
+        .btn-del-emp:hover { background: var(--ios-danger); color: #fff; }
+
+        /* Summary Table */
+        .summary-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .btn-print {
+            background: var(--ios-success); color: #000; border: none;
+            padding: 8px 18px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size: 13px;
+            transition: var(--ios-transition);
+        }
+        .btn-print:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(48, 209, 88, 0.4); }
+
+        .btn-export-excel {
+            background: #107c41; color: #fff; border: none;
+            padding: 8px 18px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size: 13px;
+            transition: var(--ios-transition);
+        }
+        .btn-export-excel:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(16, 124, 65, 0.4); }
+
+        .summary-table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+        .summary-table th, .summary-table td {
+            border: 1px solid var(--ios-card-border); padding: 12px; text-align: center; font-size: 13px;
+        }
+        .summary-table th { background: rgba(255, 255, 255, 0.08); color: var(--ios-accent); font-weight: 600; }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(25, 25, 35, 0.85);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--ios-card-border);
+            padding: 14px 24px;
+            border-radius: var(--ios-radius-md);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+            transform: translateY(80px) scale(0.9);
+            opacity: 0;
+            transition: var(--ios-transition);
+            pointer-events: none;
+        }
+        .toast.show { transform: translateY(0) scale(1); opacity: 1; pointer-events: auto; }
+
+        .footer-developer { padding-top: 12px; text-align: center; }
+        .social-links { display: flex; justify-content: center; gap: 14px; }
+        .social-btn {
+            padding: 8px 18px; border-radius: 20px; text-decoration: none;
+            font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;
+            transition: var(--ios-transition);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-facebook { background: rgba(24, 119, 242, 0.15); color: #1877f2; }
+        .btn-facebook:hover { background: rgba(24, 119, 242, 0.3); transform: translateY(-2px); }
+        .btn-whatsapp { background: rgba(37, 211, 102, 0.15); color: #25d366; }
+        .btn-whatsapp:hover { background: rgba(37, 211, 102, 0.3); transform: translateY(-2px); }
+
+        .print-only { display: none; }
+
+        @media print {
+            body { background: #fff !important; color: #000 !important; }
+            #starfield { display: none !important; }
+            .desktop-header, .desktop-grid, .footer-developer, .modal-header, .summary-controls { display: none !important; }
+            .modal-overlay#summaryModal { display: block !important; position: absolute !important; background: none !important; opacity: 1 !important; }
+            .modal-content-large { border: none !important; background: none !important; max-width: 100% !important; padding: 0 !important; box-shadow: none !important; }
+            .summary-table { width: 100% !important; border: 1px solid #000 !important; }
+            .summary-table th, .summary-table td { border: 1px solid #000 !important; color: #000 !important; }
+            .print-only { display: block !important; }
+            .invoice-title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 10px; }
+            .signature-box { display: flex; justify-content: space-between; margin-top: 50px; padding: 0 30px; }
+            .signature-item { text-align: center; width: 200px; }
+            .signature-line { border-bottom: 1px solid #000; margin-top: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="app-container">
+    <div class="desktop-header">
+        <h1 class="page-title"><i class="fa-solid fa-clock"></i> ລະບົບຕິດຕາມການມາເຮັດວຽກ</h1>
+        <div class="header-actions">
+            <button class="btn-header summary-btn" onclick="openSummaryModal()">
+                <i class="fa-solid fa-chart-pie"></i> ສະຫຼຸບຜົນ
+            </button>
+            <button class="btn-header" onclick="openSettingsModal()">
+                <i class="fa-solid fa-gear"></i> ຕັ້ງຄ່າ
+            </button>
+            <button class="btn-header" onclick="exportBackupData()">
+                <i class="fa-solid fa-download"></i> ສຳຮອງຂໍ້ມູນ (Backup)
+            </button>
+            <button class="btn-header" onclick="document.getElementById('importFileInput').click()">
+                <i class="fa-solid fa-upload"></i> ນຳເຂົ້າ (Restore)
+            </button>
+            <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="importBackupData(event)">
+        </div>
+    </div>
+
+    <div class="desktop-grid">
+        <!-- Form Panel -->
+        <div class="form-panel">
+            <div>
+                <h3 id="formTitle"><i class="fa-solid fa-pen-to-square" style="color: var(--ios-accent);"></i> ບັນທຶກຂໍ້ມູນ</h3>
+                <input type="hidden" id="editIndex" value="-1">
+                
+                <div class="form-group">
+                    <label for="date">ວັນທີ:</label>
+                    <input type="date" id="date">
+                </div>
+
+                <div class="form-group">
+                    <label for="name">ເລືອກຊື່ພະນັກງານ:</label>
+                    <select id="name"></select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="status">ສາເຫດ / ສະຖານະ:</label>
+                        <select id="status" onchange="toggleTimeInput()">
+                            <option value="normal">ມາຕາມເວລາ</option>
+                            <option value="leave">ລາພັກ / ລາກິດ (0)</option>
+                            <option value="absent">ຂາດວຽກ (-50,000)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time">ເວລາ (HH:MM):</label>
+                        <input type="time" id="time">
+                    </div>
+                </div>
+
+                <button class="btn-submit" id="btnSubmit" onclick="addEntry()">
+                    <i class="fa-solid fa-plus"></i> ບັນທຶກລາຍຊື່
+                </button>
+                <button class="btn-cancel" id="btnCancel" onclick="cancelEdit()">ຍົກເລີກການແກ້ໄຂ</button>
+            </div>
+
+            <div>
+                <button class="btn-clear" onclick="clearData()">
+                    <i class="fa-solid fa-trash"></i> ລຶບຂໍ້ມູນປະວັດທັງໝົດ
+                </button>
+            </div>
+        </div>
+
+        <!-- Table Display Panel -->
+        <div class="display-panel">
+            <div class="filter-bar">
+                <i class="fa-solid fa-filter" style="color: var(--ios-accent);"></i>
+                <input type="text" id="searchInput" placeholder="ຄົ້ນຫາຊື່ພະນັກງານ..." oninput="filterData()">
+                <input type="date" id="filterDate" onchange="filterData()">
+                <button class="btn-header" onclick="resetFilter()" style="padding: 7px 14px; font-size: 12px;">ລ້າງກັອງ</button>
+            </div>
+            <div class="table-scroll-area">
+                <table class="desktop-data-table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">ຊື່ພະນັກງານ</th>
+                            <th style="width: 20%;">ເວລາ</th>
+                            <th style="width: 35%;">ການຄິດໄລ່ເງິນ</th>
+                            <th style="width: 20%;">ຈັດການ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-developer">
+        <div class="social-links">
+            <a href="https://www.facebook.com/share/19KptCKjyW/" target="_blank" class="social-btn btn-facebook">
+                <i class="fa-brands fa-facebook-f"></i> Facebook: Jai Ntl
+            </a>
+            <a href="https://wa.me/8562078268304" target="_blank" class="social-btn btn-whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp: Jai Ntl
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 1: Settings -->
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 style="color: var(--ios-accent);"><i class="fa-solid fa-sliders"></i> ຕັ້ງຄ່າລະບົບ</h3>
+            <button class="btn-close-modal" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <h4><i class="fa-solid fa-users"></i> ຈັດການລາຍຊື່ພະນັກງານ</h4>
+        <div class="add-emp-box">
+            <input type="text" id="newEmpName" placeholder="ພິມຊື່ພະນັກງານໃໝ່...">
+            <button class="btn-add-emp" onclick="addNewEmployee()">ເພີ່ມ</button>
+        </div>
+        <ul class="emp-manage-list" id="empManageList"></ul>
+
+        <h4 style="margin-top: 22px;"><i class="fa-solid fa-coins"></i> ຕັ້ງຄ່າຈຳນວນເງິນປັບ</h4>
+        <div class="form-row">
+            <div class="form-group">
+                <label>ເງິນລາງວັນ (+):</label>
+                <input type="number" id="cfgBonus" value="10000">
+            </div>
+            <div class="form-group">
+                <label>ເງິນຕັດມາຊ້າ (-):</label>
+                <input type="number" id="cfgLateCut" value="20000">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>ເງິນຕັດຂາດວຽກ (-):</label>
+            <input type="number" id="cfgAbsentCut" value="50000">
+        </div>
+        <button class="btn-submit" onclick="saveConfigSettings()">ບັນທຶກການຕັ້ງຄ່າເງິນ</button>
+    </div>
+</div>
+
+<!-- Modal 2: Summary -->
+<div class="modal-overlay" id="summaryModal">
+    <div class="modal-content modal-content-large">
+        <div class="modal-header">
+            <h3 style="color: var(--ios-success);"><i class="fa-solid fa-chart-pie"></i> ສະຫຼຸບຜົນລາຍເດືອນ</h3>
+            <div class="summary-controls">
+                <label for="monthPicker">ເດືອນ:</label>
+                <input type="month" id="monthPicker" style="width: auto;" onchange="renderMonthlySummary()">
+                <button class="btn-export-excel" onclick="exportSummaryToCSV()"><i class="fa-solid fa-file-excel"></i> Export CSV</button>
+                <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> ພິມໃບບິນ</button>
+                <button class="btn-close-modal" onclick="closeSummaryModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+
+        <div class="print-only invoice-title">📊 ໃບບິນສະຫຼຸບຜົນລາຍເດືອນພະນັກງານ</div>
+        <div class="print-only" id="invoiceMonthText" style="text-align: right; margin-bottom: 15px;"></div>
+
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>ລຳດັບ</th>
+                    <th>ຊື່ພະນັກງານ</th>
+                    <th>ຮັບເງິນ (+)</th>
+                    <th>ຕັດເງິນ (-)</th>
+                    <th>ຂາດວຽກ (-)</th>
+                    <th>ລາພັກ</th>
+                    <th>ຍອດລວມສຸດທິ</th>
+                </tr>
+            </thead>
+            <tbody id="summaryTableBody"></tbody>
+        </table>
+
+        <div class="print-only signature-box">
+            <div class="signature-item">
+                <div>ຜູ້ກວດສອບ / ບັນຊີ</div>
+                <div class="signature-line"></div>
+            </div>
+            <div class="signature-item">
+                <div>ຜູ້ອຳນວຍການ / ອະນຸມັດ</div>
+                <div class="signature-line"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification Container -->
+<div class="toast" id="toastBox">
+    <i class="fa-solid fa-circle-check" id="toastIcon" style="color: var(--ios-success); font-size: 18px;"></i>
+    <span id="toastMsg" style="font-size: 13px;"></span>
+</div>
+
+<script>
+    /* Canvas Starfield */
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initStars();
+    });
+
+    let stars = [];
+    const numStars = 180;
+
+    function initStars() {
+        stars = [];
+        for (let i = 0; i < numStars; i++) {
+            stars.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 1.6 + 0.4,
+                alpha: Math.random(),
+                speed: Math.random() * 0.015 + 0.005,
+                increasing: Math.random() > 0.5
+            });
+        }
+    }
+
+    let shootingStars = [];
+
+    function createShootingStar() {
+        const x = Math.random() * width * 1.2 - width * 0.1;
+        const y = Math.random() * (height * 0.5);
+        const length = Math.random() * 100 + 60;
+        const speed = Math.random() * 12 + 14;
+        const angle = Math.PI / 4 + (Math.random() * 0.2 - 0.1);
+        
+        shootingStars.push({
+            x: x, y: y,
+            dx: Math.cos(angle) * speed,
+            dy: Math.sin(angle) * speed,
+            length: length, life: 1,
+            decay: Math.random() * 0.015 + 0.008,
+            thickness: Math.random() * 1.8 + 1
+        });
+    }
+
+    function scheduleShootingStar() {
+        createShootingStar();
+        setTimeout(scheduleShootingStar, Math.random() * 2000 + 800);
+    }
+
+    function animateBackground() {
+        ctx.clearRect(0, 0, width, height);
+        stars.forEach(star => {
+            if (star.increasing) {
+                star.alpha += star.speed;
+                if (star.alpha >= 1) { star.alpha = 1; star.increasing = false; }
+            } else {
+                star.alpha -= star.speed;
+                if (star.alpha <= 0.1) { star.alpha = 0.1; star.increasing = true; }
+            }
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha * 0.8})`;
+            ctx.shadowBlur = star.radius * 3;
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+            ctx.fill();
+        });
+
+        for (let i = shootingStars.length - 1; i >= 0; i--) {
+            const ss = shootingStars[i];
+            ss.x += ss.dx; ss.y += ss.dy; ss.life -= ss.decay;
+            if (ss.life <= 0 || ss.x > width + 100 || ss.y > height + 100) {
+                shootingStars.splice(i, 1);
+                continue;
+            }
+            const tailX = ss.x - (ss.dx / Math.hypot(ss.dx, ss.dy)) * ss.length;
+            const tailY = ss.y - (ss.dy / Math.hypot(ss.dx, ss.dy)) * ss.length;
+            const gradient = ctx.createLinearGradient(ss.x, ss.y, tailX, tailY);
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${ss.life})`);
+            gradient.addColorStop(0.2, `rgba(10, 132, 255, ${ss.life * 0.9})`);
+            gradient.addColorStop(1, 'rgba(10, 132, 255, 0)');
+            ctx.beginPath();
+            ctx.moveTo(ss.x, ss.y);
+            ctx.lineTo(tailX, tailY);
+            ctx.lineWidth = ss.thickness;
+            ctx.strokeStyle = gradient;
+            ctx.lineCap = 'round';
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = '#0a84ff';
+            ctx.stroke();
+        }
+        requestAnimationFrame(animateBackground);
+    }
+
+    initStars();
+    animateBackground();
+    scheduleShootingStar();
+
+    /* App Script */
+    const defaultEmployees = ["ນາງກີ້", "ນາງການ", "ນາງປ້ຳ", "ນາງແລນລີ້", "ຊາຍຈັນ"];
+
+    document.addEventListener("DOMContentLoaded", () => {
+        setCurrentDateTime();
+        loadEmployees();
+        loadSettings();
+        loadData();
+        const now = new Date();
+        document.getElementById('monthPicker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    });
+
+    function showToast(msg, icon = 'fa-circle-check', color = 'var(--ios-success)') {
+        const toast = document.getElementById('toastBox');
+        document.getElementById('toastMsg').textContent = msg;
+        const iconEl = document.getElementById('toastIcon');
+        iconEl.className = `fa-solid ${icon}`;
+        iconEl.style.color = color;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function openSettingsModal() { document.getElementById('settingsModal').classList.add('active'); }
+    function closeSettingsModal() { document.getElementById('settingsModal').classList.remove('active'); }
+    function openSummaryModal() { renderMonthlySummary(); document.getElementById('summaryModal').classList.add('active'); }
+    function closeSummaryModal() { document.getElementById('summaryModal').classList.remove('active'); }
+
+    function setCurrentDateTime() {
+        const now = new Date();
+        document.getElementById('date').value = now.toISOString().split('T')[0];
+        document.getElementById('time').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    }
+
+    function toggleTimeInput() {
+        const status = document.getElementById('status').value;
+        const timeInput = document.getElementById('time');
+        if (status === 'absent' || status === 'leave') {
+            timeInput.disabled = true;
+            timeInput.value = '';
+        } else {
+            timeInput.disabled = false;
+            setCurrentDateTime();
+        }
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : dateStr;
+    }
+
+    function getConfig() {
+        return JSON.parse(localStorage.getItem('appConfig')) || { bonus: 10000, lateCut: 20000, absentCut: 50000 };
+    }
+
+    function saveConfigSettings() {
+        const cfg = {
+            bonus: Number(document.getElementById('cfgBonus').value) || 10000,
+            lateCut: Number(document.getElementById('cfgLateCut').value) || 20000,
+            absentCut: Number(document.getElementById('cfgAbsentCut').value) || 50000
+        };
+        localStorage.setItem('appConfig', JSON.stringify(cfg));
+        showToast('ບັນທຶກການຕັ້ງຄ່າເງິນສຳເລັດ');
+        closeSettingsModal();
+        loadData();
+    }
+
+    function loadSettings() {
+        const cfg = getConfig();
+        document.getElementById('cfgBonus').value = cfg.bonus;
+        document.getElementById('cfgLateCut').value = cfg.lateCut;
+        document.getElementById('cfgAbsentCut').value = cfg.absentCut;
+    }
+
+    /* ຟັງຊັນຄິດໄລ່ເງິນປັບປຸງເງື່ອນໄຂເວລາໃໝ່ຕາມວັນຂອງອາທິດ */
+    function calculateMoney(rawDate, timeStr, status) {
+        const cfg = getConfig();
+        if (status === 'absent') {
+            return { text: `-${cfg.absentCut.toLocaleString()} ກີບ (ຂາດວຽກ)`, class: "amount-absent", val: -cfg.absentCut, type: 'absent' };
+        }
+        if (status === 'leave') {
+            return { text: "0 ກີບ (ລາພັກ)", class: "amount-leave", val: 0, type: 'leave' };
+        }
+        if (!rawDate || !timeStr) return { text: "0 ກີບ", class: "amount-zero", val: 0, type: 'zero' };
+
+        const [h, m] = timeStr.split(':').map(Number);
+        const timeInMin = h * 60 + m;
+
+        // ກວດສອບວັນຂອງອາທິດ (0 = ອາທິດ, 6 = ເສົາ)
+        const dateObj = new Date(rawDate);
+        const dayOfWeek = dateObj.getDay();
+        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+        if (!isWeekend) {
+            // ວັນທຳມະດາ (ຈັນ - ສຸກ)
+            // 14:00 - 16:30 (840 - 990 ນາທີ) = ຮັບເງິນ (+10,000)
+            if (timeInMin >= (14 * 60) && timeInMin <= (16 * 60 + 30)) {
+                return { text: `+${cfg.bonus.toLocaleString()} ກີບ (ຮັບເງິນ)`, class: "amount-add", val: cfg.bonus, type: 'add' };
+            } 
+            // 16:31 - 16:59 (991 - 1019 ນາທີ) = ບໍ່ໄດ້ຮັບຫຍັງ (0)
+            else if (timeInMin > (16 * 60 + 30) && timeInMin < (17 * 60)) {
+                return { text: "0 ກີບ (ບໍ່ໄດ້ຮັບຫຍັງ)", class: "amount-zero", val: 0, type: 'zero' };
+            } 
+            // 17:00 - 18:59 (1020 - 1139 ນາທີ) = ຕັດເງິນ (-20,000)
+            else if (timeInMin >= (17 * 60) && timeInMin < (19 * 60)) {
+                return { text: `-${cfg.lateCut.toLocaleString()} ກີບ (ຕັດເງິນ)`, class: "amount-cut", val: -cfg.lateCut, type: 'cut' };
+            } 
+            // 19:00 ເປັນຕົ້ນໄປ (>= 1140 ນາທີ) = ຂາດວຽກ (-50,000)
+            else if (timeInMin >= (19 * 60)) {
+                return { text: `-${cfg.absentCut.toLocaleString()} ກີບ (ຂາດວຽກ)`, class: "amount-absent", val: -cfg.absentCut, type: 'absent' };
+            }
+            return { text: "ມາກ່ອນເວລາ (14:00)", class: "amount-zero", val: 0, type: 'zero' };
+        } else {
+            // ວັນເສົາ - ອາທິດ
+            // 14:00 - 15:30 (840 - 930 ນາທີ) = ຮັບເງິນ (+10,000)
+            if (timeInMin >= (14 * 60) && timeInMin <= (15 * 60 + 30)) {
+                return { text: `+${cfg.bonus.toLocaleString()} ກີບ (ຮັບເງິນ)`, class: "amount-add", val: cfg.bonus, type: 'add' };
+            } 
+            // 15:31 - 15:59 (931 - 959 ນາທີ) = ບໍ່ໄດ້ຮັບຫຍັງ (0)
+            else if (timeInMin > (15 * 60 + 30) && timeInMin < (16 * 60)) {
+                return { text: "0 ກີບ (ບໍ່ໄດ້ຮັບຫຍັງ)", class: "amount-zero", val: 0, type: 'zero' };
+            } 
+            // 16:00 - 18:59 (960 - 1139 ນາທີ) = ຕັດເງິນ (-20,000)
+            else if (timeInMin >= (16 * 60) && timeInMin < (19 * 60)) {
+                return { text: `-${cfg.lateCut.toLocaleString()} ກີບ (ຕັດເງິນ)`, class: "amount-cut", val: -cfg.lateCut, type: 'cut' };
+            } 
+            // 19:00 ເປັນຕົ້ນໄປ (>= 1140 ນາທີ) = ຂາດວຽກ (-50,000)
+            else if (timeInMin >= (19 * 60)) {
+                return { text: `-${cfg.absentCut.toLocaleString()} ກີບ (ຂາດວຽກ)`, class: "amount-absent", val: -cfg.absentCut, type: 'absent' };
+            }
+            return { text: "ມາກ່ອນເວລາ (14:00)", class: "amount-zero", val: 0, type: 'zero' };
+        }
+    }
+
+    function getEmployees() {
+        let emps = JSON.parse(localStorage.getItem('employeeList'));
+        if (!emps || emps.length === 0) {
+            emps = defaultEmployees;
+            localStorage.setItem('employeeList', JSON.stringify(emps));
+        }
+        return emps;
+    }
+
+    function loadEmployees() {
+        const emps = getEmployees();
+        const selectEl = document.getElementById('name');
+        const manageList = document.getElementById('empManageList');
+        selectEl.innerHTML = ''; manageList.innerHTML = '';
+
+        emps.forEach((emp, index) => {
+            const opt = document.createElement('option');
+            opt.value = emp; opt.textContent = emp;
+            selectEl.appendChild(opt);
+
+            const li = document.createElement('li');
+            li.className = 'emp-manage-item';
+            li.innerHTML = `<span>${emp}</span><button class="btn-del-emp" onclick="deleteEmployee(${index})">ລຶບ</button>`;
+            manageList.appendChild(li);
+        });
+    }
+
+    function addNewEmployee() {
+        const input = document.getElementById('newEmpName');
+        const name = input.value.trim();
+        if (!name) return showToast('ກະລຸນາພິມຊື່ພະນັກງານ', 'fa-circle-exclamation', 'var(--ios-danger)');
+        let emps = getEmployees();
+        if (emps.includes(name)) return showToast('ມີຊື່ນີ້ແລ້ວ', 'fa-circle-exclamation', 'var(--ios-danger)');
+
+        emps.push(name);
+        localStorage.setItem('employeeList', JSON.stringify(emps));
+        input.value = '';
+        loadEmployees();
+        showToast('ເພີ່ມຊື່ພະນັກງານສຳເລັດ');
+    }
+
+    function deleteEmployee(index) {
+        let emps = getEmployees();
+        if (confirm(`ຕ້ອງການລຶບ "${emps[index]}" ອອກບໍ?`)) {
+            emps.splice(index, 1);
+            localStorage.setItem('employeeList', JSON.stringify(emps));
+            loadEmployees();
+            showToast('ລຶບຊື່ພະນັກງານສຳເລັດ');
+        }
+    }
+
+    function addEntry() {
+        const rawDate = document.getElementById('date').value;
+        const nameInput = document.getElementById('name').value;
+        const statusInput = document.getElementById('status').value;
+        const rawTime = document.getElementById('time').value;
+        const editIdx = parseInt(document.getElementById('editIndex').value);
+
+        if (!nameInput) return showToast('ກະລຸນາເລືອກຊື່ພະນັກງານ', 'fa-circle-exclamation', 'var(--ios-danger)');
+
+        const timeDisplay = (statusInput === 'absent') ? 'ຂາດວຽກ' : (statusInput === 'leave' ? 'ລາພັກ' : rawTime);
+        const moneyResult = calculateMoney(rawDate, rawTime, statusInput);
+        let entries = JSON.parse(localStorage.getItem('employeeEntries')) || [];
+        
+        const entryData = {
+            rawDate, date: formatDate(rawDate), name: nameInput, status: statusInput,
+            rawTime, time: timeDisplay, moneyText: moneyResult.text,
+            moneyClass: moneyResult.class, val: moneyResult.val, type: moneyResult.type
+        };
+
+        if (editIdx >= 0) {
+            entries[editIdx] = entryData;
+            cancelEdit();
+            showToast('ແກ້ໄຂຂໍ້ມູນສຳເລັດ');
+        } else {
+            entries.push(entryData);
+            showToast('ບັນທຶກຂໍ້ມູນສຳເລັດ');
+        }
+
+        localStorage.setItem('employeeEntries', JSON.stringify(entries));
+        loadData();
+        document.getElementById('status').value = 'normal';
+        toggleTimeInput();
+    }
+
+    function editSingleEntry(index) {
+        let entries = JSON.parse(localStorage.getItem('employeeEntries')) || [];
+        const entry = entries[index];
+        if (!entry) return;
+
+        document.getElementById('editIndex').value = index;
+        document.getElementById('date').value = entry.rawDate || '';
+        document.getElementById('name').value = entry.name;
+        document.getElementById('status').value = entry.status || 'normal';
+        toggleTimeInput();
+        if (entry.status === 'normal') document.getElementById('time').value = entry.rawTime || '';
+
+        document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-pen" style="color: var(--ios-accent);"></i> ແກ້ໄຂຂໍ້ມູນ';
+        document.getElementById('btnSubmit').textContent = 'ບັນທຶກການແກ້ໄຂ';
+        document.getElementById('btnCancel').style.display = 'block';
+    }
+
+    function cancelEdit() {
+        document.getElementById('editIndex').value = '-1';
+        document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-pen-to-square" style="color: var(--ios-accent);"></i> ບັນທຶກຂໍ້ມູນ';
+        document.getElementById('btnSubmit').innerHTML = '<i class="fa-solid fa-plus"></i> ບັນທຶກລາຍຊື່';
+        document.getElementById('btnCancel').style.display = 'none';
+        document.getElementById('status').value = 'normal';
+        toggleTimeInput();
+        setCurrentDateTime();
+    }
+
+    function loadData() {
+        let entries = JSON.parse(localStorage.getItem('employeeEntries')) || [];
+        renderList(entries);
+    }
+
+    function filterData() {
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        const filterDate = document.getElementById('filterDate').value;
+        let entries = JSON.parse(localStorage.getItem('employeeEntries')) || [];
+
+        const filtered = entries.filter(e => {
+            const matchName = e.name.toLowerCase().includes(searchText);
+            const matchDate = !filterDate || e.rawDate === filterDate;
+            return matchName && matchDate;
+        });
+
+        renderList(filtered);
+    }
+
+    function resetFilter() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('filterDate').value = '';
+        loadData();
+    }
+
+    function renderList(entries) {
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = '';
+        let currentDate = "";
+
+        entries.forEach((entry, index) => {
+            if (entry.date && entry.date !== currentDate) {
+                currentDate = entry.date;
+                const headerRow = document.createElement('tr');
+                headerRow.className = 'date-header-row';
+                headerRow.innerHTML = `<td colspan="4"><i class="fa-regular fa-calendar-days"></i> ວັນທີ: ${entry.date}</td>`;
+                tableBody.appendChild(headerRow);
+            }
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${entry.name}</strong></td>
+                <td style="color: var(--ios-text-secondary);">${entry.time || '-'}</td>
+                <td class="${entry.moneyClass}">${entry.moneyText}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-edit-row" onclick="editSingleEntry(${index})">ແກ້ໄຂ</button>
+                        <button class="btn-delete-row" onclick="deleteSingleEntry(${index})">ລຶບ</button>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    function deleteSingleEntry(index) {
+        let entries = JSON.parse(localStorage.getItem('employeeEntries')) || [];
+        if (confirm(`ຕ້ອງການລຶບລາຍການຂອງ "${entries[index].name}" ແທ້ບໍ?`)) {
+            entries.splice(index, 1);
+            localStorage.setItem('employeeEntries', JSON.stringify(entries));
+            loadData();
+            showToast('ລຶບຂໍ້ມູນສຳເລັດ');
+        }
+    }
+
+    function clearData() {
+        if (confirm('ທ່ານຕ້ອງການລຶບປະວັດການບັນທຶກທັງໝົດແທ້ບໍ?')) {
+            localStorage.removeItem('employeeEntries');
+            loadData();
+            showToast('ລຶບຂໍ້ມູນທັງໝົດແລ້ວ');
+        }
+    }
+
+    function renderMonthlySummary() {
+        const selectedMonth = document.getElementById('monthPicker').value;
+        if (!selectedMonth) return;
+
+        const emps = getEmployees();
+        const entries = JSON.parse(localStorage.getItem('employeeEntries')) || [];
+        const cfg = getConfig();
+        const summaryTableBody = document.getElementById('summaryTableBody');
+        summaryTableBody.innerHTML = '';
+
+        document.getElementById('invoiceMonthText').textContent = `ປະຈຳເດືອນ: ${selectedMonth}`;
+
+        emps.forEach((emp, idx) => {
+            let addCount = 0, cutCount = 0, absentCount = 0, leaveCount = 0, totalAmount = 0;
+
+            entries.forEach(entry => {
+                if (entry.name === emp && entry.rawDate && entry.rawDate.startsWith(selectedMonth)) {
+                    if (entry.type === 'add') { addCount++; totalAmount += cfg.bonus; }
+                    else if (entry.type === 'cut') { cutCount++; totalAmount -= cfg.lateCut; }
+                    else if (entry.type === 'absent') { absentCount++; totalAmount -= cfg.absentCut; }
+                    else if (entry.type === 'leave') { leaveCount++; }
+                }
+            });
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td><strong>${emp}</strong></td>
+                <td style="color: var(--ios-success);">${addCount} ຄັ້ງ (+${(addCount * cfg.bonus).toLocaleString()})</td>
+                <td style="color: var(--ios-danger);">${cutCount} ຄັ້ງ (-${(cutCount * cfg.lateCut).toLocaleString()})</td>
+                <td style="color: #ff3b30;">${absentCount} ຄັ້ງ (-${(absentCount * cfg.absentCut).toLocaleString()})</td>
+                <td style="color: var(--ios-warning);">${leaveCount} ຄັ້ງ</td>
+                <td style="font-weight:700; color: ${totalAmount >= 0 ? 'var(--ios-success)' : 'var(--ios-danger)'};">
+                    ${totalAmount.toLocaleString()} ກີບ
+                </td>
+            `;
+            summaryTableBody.appendChild(tr);
+        });
+    }
+
+    function exportSummaryToCSV() {
+        const selectedMonth = document.getElementById('monthPicker').value;
+        const emps = getEmployees();
+        const entries = JSON.parse(localStorage.getItem('employeeEntries')) || [];
+        const cfg = getConfig();
+
+        let csv = "\uFEFFລຳດັບ,ຊື່ພະນັກງານ,ຮັບເງິນ (+),ຕັດເງິນ (-),ຂາດວຽກ (-),ລາພັກ,ຍອດລວມສຸດທິ (ກີບ)\n";
+
+        emps.forEach((emp, idx) => {
+            let addCount = 0, cutCount = 0, absentCount = 0, leaveCount = 0, totalAmount = 0;
+            entries.forEach(entry => {
+                if (entry.name === emp && entry.rawDate && entry.rawDate.startsWith(selectedMonth)) {
+                    if (entry.type === 'add') { addCount++; totalAmount += cfg.bonus; }
+                    else if (entry.type === 'cut') { cutCount++; totalAmount -= cfg.lateCut; }
+                    else if (entry.type === 'absent') { absentCount++; totalAmount -= cfg.absentCut; }
+                    else if (entry.type === 'leave') { leaveCount++; }
+                }
+            });
+            csv += `${idx + 1},"${emp}",${addCount},${cutCount},${absentCount},${leaveCount},${totalAmount}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Summary_${selectedMonth}.csv`;
+        link.click();
+        showToast('Export CSV ສຳເລັດ');
+    }
+
+    function exportBackupData() {
+        const backupData = {
+            employeeList: JSON.parse(localStorage.getItem('employeeList')),
+            employeeEntries: JSON.parse(localStorage.getItem('employeeEntries')),
+            appConfig: JSON.parse(localStorage.getItem('appConfig'))
+        };
+        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Attendance_Backup_${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        showToast('Export ສຳຮອງຂໍ້ມູນສຳເລັດ');
+    }
+
+    function importBackupData(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                const data = JSON.parse(evt.target.result);
+                if (data.employeeList) localStorage.setItem('employeeList', JSON.stringify(data.employeeList));
+                if (data.employeeEntries) localStorage.setItem('employeeEntries', JSON.stringify(data.employeeEntries));
+                if (data.appConfig) localStorage.setItem('appConfig', JSON.stringify(data.appConfig));
+                loadEmployees();
+                loadSettings();
+                loadData();
+                showToast('Restore ສຳຮອງຂໍ້ມູນສຳເລັດ');
+            } catch (err) {
+                showToast('ໄຟລ໌ບໍ່ຖືກຕ້ອງ', 'fa-circle-xmark', 'var(--ios-danger)');
+            }
+        };
+        reader.readAsText(file);
+    }
+</script>
+
+</body>
+</html>
